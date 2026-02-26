@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesablayici</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        input[type="range"] {
+            width: 100%;
+            accent-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+
+    <h1 class="text-4xl font-bold text-center mb-7">İndi hesablayın</h1>
+
+    <div class="flex justify-center gap-2 mb-8">
+        <button onclick="tabi_ac('kredit', this)" class="tab px-5 py-2 rounded-xl bg-black text-white font-bold">Kredit</button>
+        <button onclick="tabi_ac('depozit', this)" class="tab px-5 py-2 rounded-xl text-gray-500">Depozit</button>
+        <button onclick="tabi_ac('avto', this)" class="tab px-5 py-2 rounded-xl text-gray-500">Avtomobil krediti</button>
+        <button onclick="tabi_ac('ipoteka', this)" class="tab px-5 py-2 rounded-xl text-gray-500">İpoteka</button>
+    </div>
+
+
+    <div id="kredit" class="max-w-4xl mx-auto flex gap-6">
+
+        <div class="bg-white rounded-2xl p-8 flex-1">
+
+            <div class="flex justify-between mb-2">
+                <span class="text-gray-500 text-sm">Məbləğ</span>
+                <span class="font-bold" id="k_mebleg_goster">1 000 ₼</span>
+            </div>
+            <input type="range" id="k_mebleg" min="300" max="50000" step="100" value="1000" oninput="kredit_hesabla()">
+            <div class="flex justify-between text-xs text-gray-400 mt-1 mb-5">
+                <span>300 ₼</span>
+                <span>50 000 ₼</span>
+            </div>
+
+            <div class="flex justify-between mb-2">
+                <span class="text-gray-500 text-sm">Müddət</span>
+                <span class="font-bold" id="k_muddet_goster">6 ay</span>
+            </div>
+            <input type="range" id="k_muddet" min="3" max="60" value="6" oninput="kredit_hesabla()">
+            <div class="flex justify-between text-xs text-gray-400 mt-1 mb-5">
+                <span>3 ay</span>
+                <span>60 ay</span>
+            </div>
+
+            <div class="flex justify-between mb-2">
+                <span class="text-gray-500 text-sm">Faiz dərəcəsi</span>
+                <span class="font-bold" id="k_faiz_goster">12.0 %</span>
+            </div>
+            <input type="range" id="k_faiz" min="10" max="38" step="0.1" value="12" oninput="kredit_hesabla()">
+            <div class="flex justify-between text-xs text-gray-400 mt-1">
+                <span>10 %</span>
+                <span>38 %</span>
+            </div>
+
+        </div>
+
+        <div class="w-64">
+            <div class="bg-blue-600 text-white rounded-2xl p-6">
+                <p class="text-center text-sm mb-1 opacity-80">Aylıq kredit ödənişi</p>
+                <p class="text-center text-4xl font-bold mb-4" id="k_ayliq">—</p>
+                <hr class="border-white opacity-30 mb-4">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <p class="text-xs opacity-70 mb-1">Kredit məbləği</p>
+                        <p class="font-bold text-lg" id="k_mebleg_info">—</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-70 mb-1">İllik faiz</p>
+                        <p class="font-bold text-lg" id="k_faiz_info">—</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-xs opacity-70 mb-1">Ümumi ödəniş</p>
+                        <p class="font-bold text-lg" id="k_umumi">—</p>
+                    </div>
+                </div>
+                <button class="w-full bg-white text-black font-bold py-3 rounded-xl">Davam et</button>
+            </div>
+            <p class="text-center text-xs text-gray-400 mt-2">İlkin hesablama</p>
+        </div>
+
+    </div>
+
+
+    <div id="depozit" class="max-w-4xl mx-auto flex gap-6 hidden">
+
+        <div class="bg-white rounded-2xl p-8 flex-1">
+
+            <div class="flex justify-between mb-6">
+
+                <div class="flex bg-gray-200 rounded-xl p-1 gap-1" id="dep_tip_qrupu">
+                    <button onclick="dep_tip_sec(this, 'ay')" class="dep-tip bg-white text-black font-semibold text-sm px-4 py-2 rounded-lg border border-gray-200">Hər ay</button>
+                    <button onclick="dep_tip_sec(this, 'il')" class="dep-tip text-gray-500 text-sm px-4 py-2 rounded-lg">Hər il</button>
+                </div>
+
+                <div class="flex bg-gray-200 rounded-xl p-1 gap-1" id="dep_val_qrupu">
+                    <button onclick="dep_val_sec(this, 'AZN')" class="dep-val bg-white text-black font-semibold text-sm px-4 py-2 rounded-lg border border-gray-200">AZN</button>
+                    <button onclick="dep_val_sec(this, 'USD')" class="dep-val text-gray-500 text-sm px-4 py-2 rounded-lg">USD</button>
+                </div>
+
+            </div>
+
+            <div class="flex justify-between mb-2">
+                <span class="text-gray-500 text-sm">Məbləğ</span>
+                <span class="font-bold" id="d_mebleg_goster">10 000 ₼</span>
+            </div>
+            <input type="range" id="d_mebleg" min="300" max="3000000" step="100" value="10000" oninput="depozit_hesabla()">
+            <div class="flex justify-between text-xs text-gray-400 mt-1 mb-6">
+                <span>300 ₼</span>
+                <span>3 000 000 ₼</span>
+            </div>
+
+            <p class="text-gray-500 text-sm mb-3">Müddət</p>
+            <div class="flex gap-2" id="dep_muddet_qrupu">
+                <button onclick="dep_muddet_sec(this, 3)" class="dep-muddet border-2 border-black font-bold text-sm px-4 py-3 rounded-full">3</button>
+                <button onclick="dep_muddet_sec(this, 6)" class="dep-muddet border border-gray-300 text-sm px-4 py-3 rounded-full">6</button>
+                <button onclick="dep_muddet_sec(this, 12)" class="dep-muddet border border-gray-300 text-sm px-4 py-3 rounded-full">12</button>
+                <button onclick="dep_muddet_sec(this, 18)" class="dep-muddet border border-gray-300 text-sm px-4 py-3 rounded-full">18</button>
+                <button onclick="dep_muddet_sec(this, 24)" class="dep-muddet border border-gray-300 text-sm px-4 py-3 rounded-full">24</button>
+                <button onclick="dep_muddet_sec(this, 36)" class="dep-muddet border border-gray-300 text-sm px-4 py-3 rounded-full">36</button>
+            </div>
+
+        </div>
+
+        <div class="w-64">
+            <div class="bg-blue-600 text-white rounded-2xl p-6">
+                <p class="text-center text-sm mb-1 opacity-80">Ümumi qazanc</p>
+                <p class="text-center text-4xl font-bold mb-4" id="d_qazanc">—</p>
+                <hr class="border-white opacity-30 mb-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <p class="text-xs opacity-70 mb-1">Hər ay ödənilən faiz</p>
+                        <p class="font-bold text-lg" id="d_aylik_faiz">—</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-70 mb-1">Faiz dərəcəsi</p>
+                        <p class="font-bold text-lg" id="d_faiz_dere">—</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div id="avto" class="max-w-4xl mx-auto flex gap-6 hidden">
+
+        <div class="bg-white rounded-2xl p-8 flex-1">
+
+            <div class="flex bg-gray-200 rounded-xl p-1 gap-1 w-fit mb-6" id="avto_nov_qrupu">
+                <button onclick="avto_nov_sec(this, 'elektrik')" class="avto-nov bg-white text-black font-semibold text-sm px-4 py-2 rounded-lg border border-gray-200">Elektrik</button>
+                <button onclick="avto_nov_sec(this, 'hibrid')" class="avto-nov text-gray-500 text-sm px-4 py-2 rounded-lg">Hibrid</button>
+                <button onclick="avto_nov_sec(this, 'diger')" class="avto-nov text-gray-500 text-sm px-4 py-2 rounded-lg">Digər</button>
+            </div>
+
+            <div class="flex justify-between mb-2">
+                <span class="text-gray-500 text-sm">Avtomobilin qiyməti</span>
+                <span class="font-bold" id="a_qiymet_goster">50 000 ₼</span>
+            </div>
+            <input type="range" id="a_qiymet" min="300" max="500000" step="100" value="50000" oninput="avto_hesabla()">
+            <div class="flex justify-between text-xs text-gray-400 mt-1 mb-5">
+                <span>300 ₼</span>
+                <span>500 000 ₼</span>
+            </div>
+
+            <div class="flex justify-between mb-2">
+                <span class="text-gray-500 text-sm">İlkin ödəniş faizi</span>
+                <span class="font-bold" id="a_ilkin_goster">20 %</span>
+            </div>
+            <input type="range" id="a_ilkin" min="10" max="90" value="20" oninput="avto_hesabla()">
+            <div class="flex justify-between text-xs text-gray-400 mt-1 mb-5">
+                <span>10 %</span>
+                <span>90 %</span>
+            </div>
+
+            <div class="flex justify-between mb-2">
+                <span class="text-gray-500 text-sm">Kredit müddəti</span>
+                <span class="font-bold" id="a_muddet_goster">24 ay</span>
+            </div>
+            <input type="range" id="a_muddet" min="3" max="60" value="24" oninput="avto_hesabla()">
+            <div class="flex justify-between text-xs text-gray-400 mt-1">
+                <span>3 ay</span>
+                <span>60 ay</span>
+            </div>
+
+        </div>
+
+        <div class="w-64">
+            <div class="bg-blue-600 text-white rounded-2xl p-6">
+                <p class="text-center text-sm mb-1 opacity-80">Aylıq kredit ödənişi</p>
+                <p class="text-center text-4xl font-bold mb-4" id="a_ayliq">—</p>
+                <hr class="border-white opacity-30 mb-4">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <p class="text-xs opacity-70 mb-1">Kredit məbləği</p>
+                        <p class="font-bold text-lg" id="a_kredit_mebleg">—</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-70 mb-1">İllik faiz dərəcəsi</p>
+                        <p class="font-bold text-lg" id="a_faiz_info">14 %</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-70 mb-1">Komissiya (0.5%, min 20 AZN)</p>
+                        <p class="font-bold text-lg" id="a_komissiya">—</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-70 mb-1">Ümumi ödəniş</p>
+                        <p class="font-bold text-lg" id="a_umumi">—</p>
+                    </div>
+                </div>
+                <button class="w-full bg-white text-black font-bold py-3 rounded-xl">Davam et</button>
+            </div>
+            <p class="text-center text-xs text-gray-400 mt-2">İlkin hesablama</p>
+        </div>
+
+    </div>
+
+
+    <div id="ipoteka" class="max-w-4xl mx-auto flex gap-6 hidden">
+
+        <div class="bg-white rounded-2xl p-8 flex-1">
+
+            <div class="flex justify-between mb-2">
+                <span class="text-gray-500 text-sm">Kredit məbləği</span>
+                <span class="font-bold" id="ip_mebleg_goster">100 000 ₼</span>
+            </div>
+            <input type="range" id="ip_mebleg" min="1" max="500000" step="1000" value="100000" oninput="ipoteka_hesabla()">
+            <div class="flex justify-between text-xs text-gray-400 mt-1 mb-5">
+                <span>1 ₼</span>
+                <span>500 000 ₼</span>
+            </div>
+
+            <div class="flex justify-between mb-2">
+                <span class="text-gray-500 text-sm">Müddət</span>
+                <span class="font-bold" id="ip_muddet_goster">12 il</span>
+            </div>
+            <input type="range" id="ip_muddet" min="1" max="25" value="12" oninput="ipoteka_hesabla()">
+            <div class="flex justify-between text-xs text-gray-400 mt-1 mb-5">
+                <span>1 il</span>
+                <span>25 il</span>
+            </div>
+
+            <p class="text-gray-500 text-sm mb-3">İllik faiz dərəcəsi</p>
+            <div class="flex gap-2" id="ip_faiz_qrupu">
+                <button onclick="ip_faiz_sec(this, 4)" class="ip-faiz border-2 border-black font-bold text-sm px-4 py-3 rounded-full">4%</button>
+                <button onclick="ip_faiz_sec(this, 7)" class="ip-faiz border border-gray-300 text-sm px-4 py-3 rounded-full">7%</button>
+                <button onclick="ip_faiz_sec(this, 8)" class="ip-faiz border border-gray-300 text-sm px-4 py-3 rounded-full">8%</button>
+                <button onclick="ip_faiz_sec(this, 11)" class="ip-faiz border border-gray-300 text-sm px-4 py-3 rounded-full">11%</button>
+                <button onclick="ip_faiz_sec(this, 12)" class="ip-faiz border border-gray-300 text-sm px-4 py-3 rounded-full">12%</button>
+                <button onclick="ip_faiz_sec(this, 13)" class="ip-faiz border border-gray-300 text-sm px-4 py-3 rounded-full">13%</button>
+            </div>
+
+        </div>
+
+        <div class="w-64">
+            <div class="bg-blue-600 text-white rounded-2xl p-6">
+                <p class="text-center text-sm mb-1 opacity-80">Aylıq kredit ödənişi</p>
+                <p class="text-center text-4xl font-bold mb-4" id="ip_ayliq">—</p>
+                <hr class="border-white opacity-30 mb-4">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <p class="text-xs opacity-70 mb-1">Kredit məbləği</p>
+                        <p class="font-bold text-lg" id="ip_mebleg_info">—</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-70 mb-1">İllik faiz dərəcəsi</p>
+                        <p class="font-bold text-lg" id="ip_faiz_info">—</p>
+                    </div>
+                </div>
+                <button class="w-full bg-white text-black font-bold py-3 rounded-xl">Davam et</button>
+            </div>
+            <p class="text-center text-xs text-gray-400 mt-2">İlkin hesablama</p>
+        </div>
+
+    </div>
+
+
+<script>
+
+    function tabi_ac(id, dusme) {
+
+        document.getElementById('kredit').classList.add('hidden');
+        document.getElementById('depozit').classList.add('hidden');
+        document.getElementById('avto').classList.add('hidden');
+        document.getElementById('ipoteka').classList.add('hidden');
+
+        document.getElementById(id).classList.remove('hidden');
+
+        var tab_dusmeleri = document.querySelectorAll('.tab');
+        for (var i = 0; i < tab_dusmeleri.length; i++) {
+            tab_dusmeleri[i].classList.remove('bg-black', 'text-white', 'font-bold');
+            tab_dusmeleri[i].classList.add('text-gray-500');
+        }
+
+        dusme.classList.add('bg-black', 'text-white', 'font-bold');
+        dusme.classList.remove('text-gray-500');
+    }
+
+
+    function kredit_hesabla() {
+
+        var mebleg = document.getElementById('k_mebleg').value;
+        mebleg = Number(mebleg);
+
+        var muddet = document.getElementById('k_muddet').value;
+        muddet = Number(muddet);
+
+        var faiz = document.getElementById('k_faiz').value;
+        faiz = Number(faiz);
+
+        var mebleg_yazisi = mebleg.toLocaleString('az-AZ') + ' ₼';
+        document.getElementById('k_mebleg_goster').textContent = mebleg_yazisi;
+
+        var muddet_yazisi = muddet + ' ay';
+        document.getElementById('k_muddet_goster').textContent = muddet_yazisi;
+
+        var faiz_yazisi = faiz.toFixed(1) + ' %';
+        document.getElementById('k_faiz_goster').textContent = faiz_yazisi;
+
+        var aylik_faiz_nisbeti = faiz / 100;
+        aylik_faiz_nisbeti = aylik_faiz_nisbeti / 12;
+
+        var ayliq_odenis;
+
+        if (aylik_faiz_nisbeti == 0) {
+            ayliq_odenis = mebleg / muddet;
+        } else {
+            var ust = mebleg * aylik_faiz_nisbeti * Math.pow(1 + aylik_faiz_nisbeti, muddet);
+            var alt = Math.pow(1 + aylik_faiz_nisbeti, muddet) - 1;
+            ayliq_odenis = ust / alt;
+        }
+
+        var umumi_odenis = ayliq_odenis * muddet;
+
+        var ayliq_yazisi = ayliq_odenis.toLocaleString('az-AZ', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ₼';
+        document.getElementById('k_ayliq').textContent = ayliq_yazisi;
+
+        var mebleg_info_yazisi = mebleg.toLocaleString('az-AZ') + ' ₼';
+        document.getElementById('k_mebleg_info').textContent = mebleg_info_yazisi;
+
+        var faiz_info_yazisi = faiz.toFixed(1) + ' %';
+        document.getElementById('k_faiz_info').textContent = faiz_info_yazisi;
+
+        var umumi_yazisi = umumi_odenis.toLocaleString('az-AZ', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ₼';
+        document.getElementById('k_umumi').textContent = umumi_yazisi;
+    }
+
+
+    var dep_tip = 'ay';
+    var dep_simvol = '₼';
+    var dep_faiz = 0.08;
+    var dep_muddet = 3;
+
+    function dep_tip_sec(dusme, tip) {
+
+        var butun = document.querySelectorAll('.dep-tip');
+        for (var i = 0; i < butun.length; i++) {
+            butun[i].classList.remove('bg-white', 'text-black', 'font-semibold', 'border', 'border-gray-200');
+            butun[i].classList.add('text-gray-500');
+        }
+
+        dusme.classList.add('bg-white', 'text-black', 'font-semibold', 'border', 'border-gray-200');
+        dusme.classList.remove('text-gray-500');
+
+        dep_tip = tip;
+
+        depozit_hesabla();
+    }
+
+    function dep_val_sec(dusme, val) {
+
+        var butun = document.querySelectorAll('.dep-val');
+        for (var i = 0; i < butun.length; i++) {
+            butun[i].classList.remove('bg-white', 'text-black', 'font-semibold', 'border', 'border-gray-200');
+            butun[i].classList.add('text-gray-500');
+        }
+
+        dusme.classList.add('bg-white', 'text-black', 'font-semibold', 'border', 'border-gray-200');
+        dusme.classList.remove('text-gray-500');
+
+        if (val == 'AZN') {
+            dep_simvol = '₼';
+            dep_faiz = 0.08;
+        }
+
+        if (val == 'USD') {
+            dep_simvol = '$';
+            dep_faiz = 0.05;
+        }
+
+        depozit_hesabla();
+    }
+
+    function dep_muddet_sec(dusme, ay) {
+
+        var butun = document.querySelectorAll('.dep-muddet');
+        for (var i = 0; i < butun.length; i++) {
+            butun[i].classList.remove('border-2', 'border-black', 'font-bold');
+            butun[i].classList.add('border', 'border-gray-300');
+        }
+
+        dusme.classList.add('border-2', 'border-black', 'font-bold');
+        dusme.classList.remove('border', 'border-gray-300');
+
+        dep_muddet = ay;
+
+        depozit_hesabla();
+    }
+
+    function depozit_hesabla() {
+
+        var mebleg = document.getElementById('d_mebleg').value;
+        mebleg = Number(mebleg);
+
+        var mebleg_yazisi = mebleg.toLocaleString('az-AZ') + ' ' + dep_simvol;
+        document.getElementById('d_mebleg_goster').textContent = mebleg_yazisi;
+
+        var aylik_faiz = mebleg * dep_faiz;
+        aylik_faiz = aylik_faiz / 12;
+
+        var umumi_qazanc = aylik_faiz * dep_muddet;
+
+        var qazanc_yazisi = umumi_qazanc.toLocaleString('az-AZ', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ' + dep_simvol;
+        document.getElementById('d_qazanc').textContent = qazanc_yazisi;
+
+        var aylik_yazisi = aylik_faiz.toLocaleString('az-AZ', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ' + dep_simvol;
+        document.getElementById('d_aylik_faiz').textContent = aylik_yazisi;
+
+        var faiz_prosent = dep_faiz * 100;
+        document.getElementById('d_faiz_dere').textContent = faiz_prosent + ' %';
+    }
+
+
+    var avto_faiz = 14;
+
+    function avto_nov_sec(dusme, nov) {
+
+        var butun = document.querySelectorAll('.avto-nov');
+        for (var i = 0; i < butun.length; i++) {
+            butun[i].classList.remove('bg-white', 'text-black', 'font-semibold', 'border', 'border-gray-200');
+            butun[i].classList.add('text-gray-500');
+        }
+
+        dusme.classList.add('bg-white', 'text-black', 'font-semibold', 'border', 'border-gray-200');
+        dusme.classList.remove('text-gray-500');
+
+        if (nov == 'elektrik') {
+            avto_faiz = 12;
+        }
+
+        if (nov == 'hibrid') {
+            avto_faiz = 14;
+        }
+
+        if (nov == 'diger') {
+            avto_faiz = 16;
+        }
+
+        avto_hesabla();
+    }
+
+    function avto_hesabla() {
+
+        var qiymet = document.getElementById('a_qiymet').value;
+        qiymet = Number(qiymet);
+
+        var ilkin = document.getElementById('a_ilkin').value;
+        ilkin = Number(ilkin);
+
+        var muddet = document.getElementById('a_muddet').value;
+        muddet = Number(muddet);
+
+        var qiymet_yazisi = qiymet.toLocaleString('az-AZ') + ' ₼';
+        document.getElementById('a_qiymet_goster').textContent = qiymet_yazisi;
+
+        var ilkin_yazisi = ilkin + ' %';
+        document.getElementById('a_ilkin_goster').textContent = ilkin_yazisi;
+
+        var muddet_yazisi = muddet + ' ay';
+        document.getElementById('a_muddet_goster').textContent = muddet_yazisi;
+
+        var ilkin_odenis = qiymet * ilkin / 100;
+        var kredit = qiymet - ilkin_odenis;
+
+        var r = avto_faiz / 100;
+        r = r / 12;
+
+        var ust = kredit * r * Math.pow(1 + r, muddet);
+        var alt = Math.pow(1 + r, muddet) - 1;
+        var ayliq = ust / alt;
+
+        var komissiya = kredit * 0.005;
+        if (komissiya < 20) {
+            komissiya = 20;
+        }
+
+        var umumi = ayliq * muddet;
+
+        var ayliq_yazisi = ayliq.toLocaleString('az-AZ', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ₼';
+        document.getElementById('a_ayliq').textContent = ayliq_yazisi;
+
+        var kredit_yazisi = Math.round(kredit).toLocaleString('az-AZ') + ' ₼';
+        document.getElementById('a_kredit_mebleg').textContent = kredit_yazisi;
+
+        var faiz_yazisi = avto_faiz + ' %';
+        document.getElementById('a_faiz_info').textContent = faiz_yazisi;
+
+        var komissiya_yazisi = Math.round(komissiya).toLocaleString('az-AZ') + ' ₼';
+        document.getElementById('a_komissiya').textContent = komissiya_yazisi;
+
+        var umumi_yazisi = umumi.toLocaleString('az-AZ', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ₼';
+        document.getElementById('a_umumi').textContent = umumi_yazisi;
+    }
+
+
+    var ip_faiz = 4;
+
+    function ip_faiz_sec(dusme, faiz) {
+
+        var butun = document.querySelectorAll('.ip-faiz');
+        for (var i = 0; i < butun.length; i++) {
+            butun[i].classList.remove('border-2', 'border-black', 'font-bold');
+            butun[i].classList.add('border', 'border-gray-300');
+        }
+
+        dusme.classList.add('border-2', 'border-black', 'font-bold');
+        dusme.classList.remove('border', 'border-gray-300');
+
+        ip_faiz = faiz;
+
+        ipoteka_hesabla();
+    }
+
+    function ipoteka_hesabla() {
+
+        var mebleg = document.getElementById('ip_mebleg').value;
+        mebleg = Number(mebleg);
+
+        var il = document.getElementById('ip_muddet').value;
+        il = Number(il);
+
+        var ay_sayi = il * 12;
+
+        var mebleg_yazisi = mebleg.toLocaleString('az-AZ') + ' ₼';
+        document.getElementById('ip_mebleg_goster').textContent = mebleg_yazisi;
+
+        var muddet_yazisi = il + ' il';
+        document.getElementById('ip_muddet_goster').textContent = muddet_yazisi;
+
+        var r = ip_faiz / 100;
+        r = r / 12;
+
+        var ust = mebleg * r * Math.pow(1 + r, ay_sayi);
+        var alt = Math.pow(1 + r, ay_sayi) - 1;
+        var ayliq = ust / alt;
+
+        var ayliq_yazisi = ayliq.toLocaleString('az-AZ', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ₼';
+        document.getElementById('ip_ayliq').textContent = ayliq_yazisi;
+
+        var mebleg_info_yazisi = mebleg.toLocaleString('az-AZ') + ' ₼';
+        document.getElementById('ip_mebleg_info').textContent = mebleg_info_yazisi;
+
+        var faiz_yazisi = ip_faiz + ' %';
+        document.getElementById('ip_faiz_info').textContent = faiz_yazisi;
+    }
+
+
+    kredit_hesabla();
+    depozit_hesabla();
+    avto_hesabla();
+    ipoteka_hesabla();
+
+</script>
+
+</body>
+</html>
